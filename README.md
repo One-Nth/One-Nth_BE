@@ -20,22 +20,7 @@
 | [@Sojeong0430](https://github.com/Sojeong0430) | [@LEEYOENN](https://github.com/LEEYOENN)| [@huggywuggy1289](https://github.com/huggywuggy1289) | [@galllee](https://github.com/galllee) | [@jaehee0318](https://github.com/jaehee0318) |
 <br/>
 
-
-### 🛒주요기능 (작성중)
-### N분의 1
-
----
-
-### 꿀팁 N분의 1
-
-
----
-
-### 기타 편의 기능
-
-
-
-  </br>
+[🛒 협업 룰 & 컨벤션](https://honeysuckle-foxglove-71c.notion.site/N-1-BE-250f97d2df3f800d9823dac6660c5ccb?source=copy_link)
   
 ## 🛒전체 아키텍처
 <img width="9277" height="4791" alt="Section 1 (2)" src="https://github.com/user-attachments/assets/1b757aa9-c016-48f6-839e-64b6004b9336" />
@@ -76,4 +61,3 @@
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![FCM](https://img.shields.io/badge/FCM-039BE5?style=for-the-badge&logo=firebase&logoColor=white)
 
-## 🛒협업 룰 & 컨벤션
