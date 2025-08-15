@@ -13,6 +13,14 @@
 
 </br>
 
+### 🛒BACKEND Developer
+| <center>이소정(BE LEADER)</center>| <center>이연</center>| <center>손재윤</center>| <center>김민서</center>| <center>양재희</center>| 
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| <center><img width="150px" src="https://avatars.githubusercontent.com/Sojeong0430" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/LEEYOENN" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/huggywuggy1289" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/galllee" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/jaehee0318" /></center> |
+| [@Sojeong0430](https://github.com/Sojeong0430) | [@LEEYOENN](https://github.com/LEEYOENN)| [@huggywuggy1289](https://github.com/huggywuggy1289) | [@galllee](https://github.com/galllee) | [@jaehee0318](https://github.com/jaehee0318) |
+<br/>
+
+
 ### 🛒주요기능 (작성중)
 ### N분의 1
 
@@ -28,14 +36,7 @@
 
 
   </br>
-
-### 🛒BACKEND Developer
-| <center>이소정(BE LEADER)</center>| <center>이연</center>| <center>손재윤</center>| <center>김민서</center>| <center>양재희</center>| 
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| <center><img width="150px" src="https://avatars.githubusercontent.com/Sojeong0430" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/LEEYOENN" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/huggywuggy1289" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/galllee" /></center> | <center><img width="150px" src="https://avatars.githubusercontent.com/jaehee0318" /></center> |
-| [@Sojeong0430](https://github.com/Sojeong0430) | [@LEEYOENN](https://github.com/LEEYOENN)| [@huggywuggy1289](https://github.com/huggywuggy1289) | [@galllee](https://github.com/galllee) | [@jaehee0318](https://github.com/jaehee0318) |
-<br/>
-
+  
 ## 🛒전체 아키텍처
 <img width="9277" height="4791" alt="Section 1 (2)" src="https://github.com/user-attachments/assets/1b757aa9-c016-48f6-839e-64b6004b9336" />
 
@@ -74,3 +75,5 @@
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![FCM](https://img.shields.io/badge/FCM-039BE5?style=for-the-badge&logo=firebase&logoColor=white)
+
+## 🛒협업 룰 & 컨벤션
