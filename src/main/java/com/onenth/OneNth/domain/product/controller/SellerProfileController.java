@@ -1,7 +1,7 @@
 package com.onenth.OneNth.domain.product.controller;
 
 import com.onenth.OneNth.domain.product.dto.SellerProfileResponseDTO;
-import com.onenth.OneNth.domain.product.service.SellerProfileService.SellerProfileService;
+import com.onenth.OneNth.domain.product.service.SellerProfileService.getSellerProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import com.onenth.OneNth.global.apiPayload.ApiResponse;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "같이사요 & 함께 나눠요 상품 판매자 관련 API", description = "판매자 프로필 조회 API 지원")
 public class SellerProfileController {
 
-    private final SellerProfileService sellerProfileService;
+    private final getSellerProfile sellerProfileService;
 
     @Operation(
             summary = "같이 사요 판매자 프로필 조회",

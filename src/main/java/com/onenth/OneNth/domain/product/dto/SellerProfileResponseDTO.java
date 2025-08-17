@@ -35,7 +35,7 @@ public class SellerProfileResponseDTO {
         private Long id;
         private String name;
         private Status status;
-        private int price;
+        private Integer price;
         private ItemCategory itemCategory;
         private PurchaseMethod purchaseMethod;
         private String thumbnailUrl;
