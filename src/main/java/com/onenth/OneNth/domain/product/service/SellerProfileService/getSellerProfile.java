@@ -33,7 +33,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class SellerProfileService {
+public class getSellerProfile {
 
     private final MemberRepository memberRepository;
     private final MemberRegionRepository memberRegionRepository;
@@ -67,18 +67,28 @@ public class SellerProfileService {
                         .build())
                 .toList();
 
-        List<PurchaseReview> reviews = purchaseReviewRepository.findByMember(member);
-        int reviewCount = reviews.size();
-        double avgRating = reviews.stream()
-                .mapToDouble(r -> r.getRate().doubleValue())
-                .average().orElse(0.0);
+        List<PurchaseReview> receivedReviews = items.stream()
+                .flatMap(i -> i.getPurchaseReviews().stream())
+                .toList();
 
-        List<ReviewResponseDTO.getReviewDTO> reviewDTOs = reviews.stream()
+        int reviewCount = receivedReviews.size();
+        double avgRating = receivedReviews.stream()
+                .map(PurchaseReview::getRate)
+                .filter(Objects::nonNull)
+                .mapToDouble(BigDecimal::doubleValue)
+                .average()
+                .orElse(0.0);
+
+        List<ReviewResponseDTO.getReviewDTO> reviewDTOs = receivedReviews.stream()
+                .sorted(java.util.Comparator.comparing(PurchaseReview::getCreatedAt).reversed())
                 .limit(3)
                 .map(r -> ReviewResponseDTO.getReviewDTO.builder()
                         .reviewId(r.getId())
-                        .reviewerId(r.getMember().getId())
+                        .reviewerId(r.getMember().getId()) // 작성자(구매자)
                         .itemId(r.getPurchaseItem().getId())
+                        .itemTitle(r.getPurchaseItem() != null ? r.getPurchaseItem().getName() : null)
+                        .reviewerNickName(r.getMember() != null ? r.getMember().getNickname() : null)
+                        .reviewerProfileImageUrl(r.getMember() != null ? r.getMember().getProfileImageUrl() : null)
                         .itemType(ItemType.PURCHASE)
                         .createdAt(r.getCreatedAt())
                         .content(r.getContent())
@@ -105,7 +115,6 @@ public class SellerProfileService {
     }
 
     public SellerProfileResponseDTO getSharingSellerProfile(Long memberId) {
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("사용자 없음"));
 
@@ -122,26 +131,39 @@ public class SellerProfileService {
                         .id(item.getId())
                         .name(item.getTitle())
                         .status(item.getStatus())
-                        .price(item.getPrice())
+                        .price(item.getPrice() == null ? 0 : item.getPrice())
                         .itemCategory(item.getItemCategory())
                         .purchaseMethod(item.getPurchaseMethod())
                         .thumbnailUrl(item.getItemImages().isEmpty() ? null : item.getItemImages().get(0).getUrl())
                         .build())
                 .toList();
 
-        List<SharingReview> reviews = sharingReviewRepository.findByMember(member);
-        int reviewCount = reviews.size();
-        double avgRating = reviews.stream()
-                .mapToDouble(r -> r.getRate().doubleValue())
-                .average().orElse(0.0);
+        List<SharingReview> receivedReviews = items.stream()
+                .flatMap(i -> i.getSharingReviews().stream())
+                .toList();
 
-        List<ReviewResponseDTO.getReviewDTO> reviewDTOs = reviews.stream()
+        int reviewCount = receivedReviews.size();
+
+        double avgRating = receivedReviews.stream()
+                .map(SharingReview::getRate)
+                .filter(Objects::nonNull)
+                .mapToDouble(BigDecimal::doubleValue)
+                .average()
+                .orElse(0.0);
+
+        List<ReviewResponseDTO.getReviewDTO> reviewDTOs = receivedReviews.stream()
+                .sorted(java.util.Comparator
+                        .comparing(SharingReview::getCreatedAt).reversed()
+                        .thenComparing(SharingReview::getId, java.util.Comparator.nullsLast(java.util.Comparator.reverseOrder())))
                 .limit(3)
                 .map(r -> ReviewResponseDTO.getReviewDTO.builder()
                         .reviewId(r.getId())
                         .reviewerId(r.getMember().getId())
                         .itemId(r.getSharingItem().getId())
                         .itemType(ItemType.SHARE)
+                        .itemTitle(r.getSharingItem() != null ? r.getSharingItem().getTitle() : null)
+                        .reviewerNickName(r.getMember() != null ? r.getMember().getNickname() : null)
+                        .reviewerProfileImageUrl(r.getMember() != null ? r.getMember().getProfileImageUrl() : null)
                         .createdAt(r.getCreatedAt())
                         .content(r.getContent())
                         .rate(r.getRate())
@@ -167,7 +189,8 @@ public class SellerProfileService {
     }
 
     public SellerProfileResponseDTO.TradeHistoryResponseDTO countUserReceivedReviews(Long userId) {
-        Member targetMember = findMemberById(userId);
+        Member targetMember = memberRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 
         List<SharingItem> sharingItems = sharingItemRepository.findByMember(targetMember);
         List<PurchaseItem> purchaseItems = purchaseItemRepository.findByMember(targetMember);
@@ -185,18 +208,13 @@ public class SellerProfileService {
                 .build();
     }
 
-    private Member findMemberById(Long userId) {
-        return memberRepository.findById(userId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
     private int calculateTotalReviewCount(List<SharingItem> sharingItems, List<PurchaseItem> purchaseItems) {
         return sharingItems.stream()
                 .mapToInt(item -> item.getSharingReviews().size())
-                .sum() +
-                purchaseItems.stream()
-                        .mapToInt(item -> item.getPurchaseReviews().size())
-                        .sum();
+                .sum()
+                + purchaseItems.stream()
+                .mapToInt(item -> item.getPurchaseReviews().size())
+                .sum();
     }
 
     private BigDecimal calculateTotalRatingSum(List<SharingItem> sharingItems, List<PurchaseItem> purchaseItems) {
@@ -217,7 +235,6 @@ public class SellerProfileService {
 
     private double calculateAverageRating(BigDecimal totalRatingSum, int totalReviewCount) {
         if (totalReviewCount == 0) return 0.0;
-
         return totalRatingSum.divide(BigDecimal.valueOf(totalReviewCount), 1, RoundingMode.HALF_UP)
                 .doubleValue();
     }
@@ -226,11 +243,10 @@ public class SellerProfileService {
         long sharingCount = sharingItems.stream()
                 .filter(item -> item.getStatus() == Status.COMPLETED)
                 .count();
-
         long purchaseCount = purchaseItems.stream()
                 .filter(item -> item.getStatus() == Status.COMPLETED)
                 .count();
-
         return (int) (sharingCount + purchaseCount);
     }
+
 }
