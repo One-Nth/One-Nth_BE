@@ -34,6 +34,13 @@ public class GeneralAlertConverter {
                 .build();
     }
 
+    public static GeneralAlertResponseDTO.SetCommentAlertStatusResponseDTO toSetCommentAlertStatusResponseDTO(MemberAlertSetting memberAlertSetting) {
+        return GeneralAlertResponseDTO.SetCommentAlertStatusResponseDTO.builder()
+                .alertType(AlertType.COMMENT)
+                .enabled(memberAlertSetting.isCommentAlerts())
+                .build();
+    }
+
     public static GeneralAlertResponseDTO.GetAllAlertSettingsResponseDTO toGetAllAlertSettingsResponseDTO(
             GeneralAlertResponseDTO.GeneralAlertSummary reviewAlertSummary,
             List<GeneralAlertResponseDTO.KeywordAlertSummary> keywordAlertSummaryList

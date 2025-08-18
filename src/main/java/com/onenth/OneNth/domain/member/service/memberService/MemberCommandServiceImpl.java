@@ -80,6 +80,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                 .chatAlerts(true)
                 .scrapAlerts(true)
                 .reviewAlerts(true)
+                .commentAlerts(true)
                 .build();
         memberAlertSettingRepository.save(alertSetting);
 

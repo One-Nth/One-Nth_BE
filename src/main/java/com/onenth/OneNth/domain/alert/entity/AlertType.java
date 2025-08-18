@@ -6,6 +6,7 @@ public enum AlertType {
     DISCOUNT, // 할인 정보
     RESTAURANT, // 우리동네 맛집, 카페
     LIFE_TIP, // 생활 정보
+    COMMENT,
 
     CHAT
 }

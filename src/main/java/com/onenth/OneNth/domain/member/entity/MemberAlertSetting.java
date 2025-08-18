@@ -25,6 +25,9 @@ public class MemberAlertSetting extends BaseEntity {
     @Column(nullable = false)
     private boolean scrapAlerts = false; // 스크랩알림 수신여부
 
+    @Column(nullable = false)
+    private boolean commentAlerts = false; // 게시물 댓글 알림 수신여부
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private Member member;
@@ -33,6 +36,7 @@ public class MemberAlertSetting extends BaseEntity {
         switch (alertType) {
             case CHAT -> chatAlerts = true;
             case REVIEW -> reviewAlerts = true;
+            case COMMENT -> commentAlerts = true;
 /*            case SCRAP -> scrapAlerts = true;*/
         }
     }
@@ -41,6 +45,7 @@ public class MemberAlertSetting extends BaseEntity {
         switch (alertType) {
             case CHAT -> chatAlerts = false;
             case REVIEW -> reviewAlerts = false;
+            case COMMENT -> commentAlerts = false;
 /*            case SCRAP -> scrapAlerts = false;*/
         }
     }
