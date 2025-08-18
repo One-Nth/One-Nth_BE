@@ -53,6 +53,7 @@ public class GeneralAlertResponseDTO {
     @NoArgsConstructor
     public static class GetAllAlertSettingsResponseDTO {
         GeneralAlertSummary reviewAlertSummary;
+        GeneralAlertSummary commentAlertSummary;
         List<KeywordAlertSummary> keywordAlertSummaryList;
     }
 

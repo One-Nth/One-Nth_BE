@@ -43,10 +43,12 @@ public class GeneralAlertConverter {
 
     public static GeneralAlertResponseDTO.GetAllAlertSettingsResponseDTO toGetAllAlertSettingsResponseDTO(
             GeneralAlertResponseDTO.GeneralAlertSummary reviewAlertSummary,
+            GeneralAlertResponseDTO.GeneralAlertSummary commentAlertSummary,
             List<GeneralAlertResponseDTO.KeywordAlertSummary> keywordAlertSummaryList
     ) {
         return GeneralAlertResponseDTO.GetAllAlertSettingsResponseDTO.builder()
                 .reviewAlertSummary(reviewAlertSummary)
+                .commentAlertSummary(commentAlertSummary)
                 .keywordAlertSummaryList(keywordAlertSummaryList)
                 .build();
     }
@@ -64,6 +66,11 @@ public class GeneralAlertConverter {
             return GeneralAlertResponseDTO.GeneralAlertSummary.builder()
                     .alertType(alertType)
                     .enabled(memberAlertSetting.isReviewAlerts())
+                    .build();
+        } else if (alertType == AlertType.COMMENT) {
+            return GeneralAlertResponseDTO.GeneralAlertSummary.builder()
+                    .alertType(alertType)
+                    .enabled(memberAlertSetting.isCommentAlerts())
                     .build();
         } else {
             throw new GeneralException(ErrorStatus.UNEXPECTED_ALERT_TYPE);
