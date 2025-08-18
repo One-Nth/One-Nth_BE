@@ -107,8 +107,14 @@ public class MemberRegionCommandServiceImpl implements MemberRegionCommandServic
 
         String detectedRegionName = geoCodingService.getRegionNameByCoordinates(request.getLatitude(), request.getLongitude());
 
+        boolean isVerified = detectedRegionName.equals(region.getRegionName());
+
+        if (isVerified) {
+            memberRegion.updateIsVerified(true);
+        }
+
         return MemberRegionResponseDTO.VerifyMyRegionResponseDTO.builder()
-                .isVerified(detectedRegionName.equals(region.getRegionName()))
+                .isVerified(isVerified)
                 .detectedRegionName(detectedRegionName)
                 .requestedRegionName(region.getRegionName())
                 .build();

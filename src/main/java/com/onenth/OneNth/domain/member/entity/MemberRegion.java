@@ -37,6 +37,10 @@ public class MemberRegion extends BaseEntity {
         this.isMain = isMain;
     }
 
+    public void updateIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
     public static MemberRegion of(Member member, Region region) {
         return MemberRegion.builder()
                 .member(member)
