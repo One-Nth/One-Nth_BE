@@ -42,8 +42,18 @@ public class GeneralAlertResponseDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class SetCommentAlertStatusResponseDTO {
+        AlertType alertType;
+        boolean enabled;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class GetAllAlertSettingsResponseDTO {
         GeneralAlertSummary reviewAlertSummary;
+        GeneralAlertSummary commentAlertSummary;
         List<KeywordAlertSummary> keywordAlertSummaryList;
     }
 

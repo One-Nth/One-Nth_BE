@@ -11,7 +11,6 @@ import com.onenth.OneNth.domain.member.settings.alert.generalAlert.dto.GeneralAl
 import com.onenth.OneNth.domain.member.settings.alert.generalAlert.repository.MemberAlertSettingRepository;
 import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository.ProductKeywordAlertRepository;
 import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository.RegionKeywordAlertRepository;
-import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.service.KeywordAlertCommandServiceImpl;
 import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertSortUtil;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
 import com.onenth.OneNth.global.apiPayload.exception.GeneralException;
@@ -19,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +43,7 @@ public class GeneralAlertQueryServiceImpl implements GeneralAlertQueryService {
         List<RegionKeywordAlert> regionKeywordAlerts = regionKeywordAlertRepository.findAllByMember(member);
 
         GeneralAlertResponseDTO.GeneralAlertSummary reviewAlertSummary = GeneralAlertConverter.toGeneralAlertSummary(AlertType.REVIEW, memberAlertSetting);
+        GeneralAlertResponseDTO.GeneralAlertSummary commentAlertSummary = GeneralAlertConverter.toGeneralAlertSummary(AlertType.COMMENT, memberAlertSetting);
 
         List<Object> mergedAlerts = KeywordAlertSortUtil.mergeAndSortAlerts(productKeywordAlerts, regionKeywordAlerts);
 
@@ -53,6 +51,6 @@ public class GeneralAlertQueryServiceImpl implements GeneralAlertQueryService {
                 .map(keywordAlert -> GeneralAlertConverter.toKeywordAlertSummary(keywordAlert))
                 .collect(Collectors.toList());
 
-        return GeneralAlertConverter.toGetAllAlertSettingsResponseDTO(reviewAlertSummary, keywordAlertSummaryList);
+        return GeneralAlertConverter.toGetAllAlertSettingsResponseDTO(reviewAlertSummary, commentAlertSummary, keywordAlertSummaryList);
     }
 }

@@ -26,6 +26,8 @@ public class QMemberAlertSetting extends EntityPathBase<MemberAlertSetting> {
 
     public final BooleanPath chatAlerts = createBoolean("chatAlerts");
 
+    public final BooleanPath commentAlerts = createBoolean("commentAlerts");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
