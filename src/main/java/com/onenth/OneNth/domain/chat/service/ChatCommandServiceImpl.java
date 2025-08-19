@@ -15,6 +15,7 @@ import com.onenth.OneNth.domain.member.entity.Report;
 import com.onenth.OneNth.domain.member.entity.enums.ReportType;
 import com.onenth.OneNth.domain.member.repository.ReportRepository;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
+import com.onenth.OneNth.domain.product.entity.enums.ItemType;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
 import com.onenth.OneNth.global.apiPayload.exception.handler.ChatHandler;
 import com.onenth.OneNth.global.apiPayload.exception.handler.MemberHandler;
@@ -24,6 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
+
+import static com.onenth.OneNth.domain.alert.converter.AlertConverter.toAlert;
+import static com.onenth.OneNth.domain.alert.entity.AlertType.REVIEW;
+import static com.onenth.OneNth.domain.alert.fcm.FcmClient.sendNotification;
 
 @Service
 @RequiredArgsConstructor
