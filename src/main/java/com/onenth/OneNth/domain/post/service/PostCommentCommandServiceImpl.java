@@ -1,15 +1,23 @@
 package com.onenth.OneNth.domain.post.service;
 
+import com.onenth.OneNth.domain.alert.entity.AlertType;
+import com.onenth.OneNth.domain.alert.repository.AlertRepository;
 import com.onenth.OneNth.domain.member.entity.Member;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
 import com.onenth.OneNth.domain.post.dto.PostCommentSaveRequestDTO;
 import com.onenth.OneNth.domain.post.entity.Post;
 import com.onenth.OneNth.domain.post.entity.PostComment;
+import com.onenth.OneNth.domain.post.entity.enums.PostType;
 import com.onenth.OneNth.domain.post.repository.PostRepository;
 import com.onenth.OneNth.domain.post.repository.commentRepository.CommentRepository;
+import com.onenth.OneNth.domain.product.entity.enums.ItemType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.onenth.OneNth.domain.alert.converter.AlertConverter.toAlert;
+import static com.onenth.OneNth.domain.alert.entity.AlertType.REVIEW;
+import static com.onenth.OneNth.domain.alert.fcm.FcmClient.sendNotification;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +26,7 @@ public class PostCommentCommandServiceImpl implements PostCommentCommandService{
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final AlertRepository alertRepository;
 
     @Override
     @Transactional
@@ -35,6 +44,23 @@ public class PostCommentCommandServiceImpl implements PostCommentCommandService{
 
         commentRepository.saveAndFlush(comment);
 
+        Member targetUser = post.getMember();
+        if (targetUser.getMemberAlertSetting().isCommentAlerts()) {
+            String title = "새로운 댓글이 달렸어요 💬";
+            String body = member.getName() + "님이 \"" + post.getTitle() + "\" 에 댓글을 남겼습니다.";
+
+            targetUser.getFcmTokens().forEach(token ->
+                    sendNotification(token.getFcmToken(), title, body)
+            );
+
+            AlertType alertType = switch (post.getPostType()) {
+                case DISCOUNT -> AlertType.DISCOUNT;
+                case RESTAURANT -> AlertType.RESTAURANT;
+                case LIFE_TIP -> AlertType.LIFE_TIP;
+            };
+            alertRepository.save(toAlert(targetUser, alertType, null, post.getId(), body, title));
+
+        }
         return comment.getId();
     }
 
