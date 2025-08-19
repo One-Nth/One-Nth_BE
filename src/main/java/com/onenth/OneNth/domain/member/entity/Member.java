@@ -1,6 +1,7 @@
 package com.onenth.OneNth.domain.member.entity;
 
 import com.onenth.OneNth.domain.alert.entity.Alert;
+import com.onenth.OneNth.domain.alert.entity.FcmToken;
 import com.onenth.OneNth.domain.chat.entity.ChatRoomMember;
 import com.onenth.OneNth.domain.common.BaseEntity;
 import com.onenth.OneNth.domain.member.entity.enums.LoginType;
@@ -104,6 +105,12 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FcmToken> fcmTokens = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MemberAlertSetting memberAlertSetting;
 
     @Column(nullable = false)
     private boolean verified;

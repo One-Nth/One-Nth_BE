@@ -2,6 +2,9 @@ package com.onenth.OneNth.domain.alert.converter;
 
 import com.onenth.OneNth.domain.alert.dto.AlertResponseDTO;
 import com.onenth.OneNth.domain.alert.entity.Alert;
+import com.onenth.OneNth.domain.alert.entity.AlertType;
+import com.onenth.OneNth.domain.member.entity.Member;
+import com.onenth.OneNth.domain.product.entity.enums.ItemType;
 
 public class AlertConverter {
 
@@ -21,6 +24,20 @@ public class AlertConverter {
                 .contentId(alert.getContentId())
                 .message(alert.getMessage())
                 .readStatus(alert.isRead())
+                .build();
+    }
+
+    public static Alert toAlert(
+            Member member, AlertType alertType, ItemType itemType,
+            Long contentId, String message, String title){
+        return Alert.builder()
+                .alertType(alertType)
+                .itemType(itemType)
+                .contentId(contentId)
+                .message(message)
+                .title(title)
+                .isRead(false)
+                .member(member)
                 .build();
     }
 }
