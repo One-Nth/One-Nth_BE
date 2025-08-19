@@ -2,6 +2,9 @@ package com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository;
 
 import com.onenth.OneNth.domain.member.entity.ProductKeywordAlert;
 import com.onenth.OneNth.domain.member.entity.Member;
+import com.onenth.OneNth.domain.member.entity.RegionKeywordAlert;
+import com.onenth.OneNth.domain.region.entity.Region;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,4 +19,7 @@ public interface ProductKeywordAlertRepository extends JpaRepository<ProductKeyw
     Optional<ProductKeywordAlert> findByIdAndMember(Long id, Member member);
 
     List<ProductKeywordAlert> findAllByMember(Member member);
+
+    @EntityGraph(attributePaths = {"member"})
+    List<ProductKeywordAlert> findByKeywordAndEnabled(String keyword, boolean enabled);
 }

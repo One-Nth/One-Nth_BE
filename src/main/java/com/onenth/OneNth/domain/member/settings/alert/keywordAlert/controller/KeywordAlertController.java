@@ -39,7 +39,7 @@ public class KeywordAlertController {
     @PostMapping("/regions/{regionId}")
     public ApiResponse<KeywordAlertResponseDTO.AddKeywordAlertResponseDTO> addRegionKeywordAlert(
             @Parameter(hidden=true) @AuthUser Long userId,
-            @PathVariable Long regionId
+            @PathVariable("regionId") Long regionId
     ) {
         return ApiResponse.onSuccess(keywordAlertCommandService.addRegionKeyword(userId, regionId));
     }

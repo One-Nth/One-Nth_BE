@@ -11,7 +11,7 @@ import com.onenth.OneNth.domain.member.settings.alert.generalAlert.dto.GeneralAl
 import com.onenth.OneNth.domain.member.settings.alert.generalAlert.repository.MemberAlertSettingRepository;
 import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository.ProductKeywordAlertRepository;
 import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository.RegionKeywordAlertRepository;
-import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertSortUtil;
+import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertUtil;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
 import com.onenth.OneNth.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class GeneralAlertQueryServiceImpl implements GeneralAlertQueryService {
         GeneralAlertResponseDTO.GeneralAlertSummary reviewAlertSummary = GeneralAlertConverter.toGeneralAlertSummary(AlertType.REVIEW, memberAlertSetting);
         GeneralAlertResponseDTO.GeneralAlertSummary commentAlertSummary = GeneralAlertConverter.toGeneralAlertSummary(AlertType.COMMENT, memberAlertSetting);
 
-        List<Object> mergedAlerts = KeywordAlertSortUtil.mergeAndSortAlerts(productKeywordAlerts, regionKeywordAlerts);
+        List<Object> mergedAlerts = KeywordAlertUtil.mergeAndSortAlerts(productKeywordAlerts, regionKeywordAlerts);
 
         List<GeneralAlertResponseDTO.KeywordAlertSummary> keywordAlertSummaryList = mergedAlerts.stream()
                 .map(keywordAlert -> GeneralAlertConverter.toKeywordAlertSummary(keywordAlert))
