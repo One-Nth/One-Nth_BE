@@ -1,6 +1,10 @@
 package com.onenth.OneNth.domain.product.service.reviewService;
 
+import com.onenth.OneNth.domain.alert.entity.Alert;
+import com.onenth.OneNth.domain.alert.entity.FcmToken;
+import com.onenth.OneNth.domain.alert.repository.AlertRepository;
 import com.onenth.OneNth.domain.member.entity.Member;
+import com.onenth.OneNth.domain.member.entity.MemberAlertSetting;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
 import com.onenth.OneNth.domain.product.converter.ReviewConverter;
 import com.onenth.OneNth.domain.product.dto.ReviewRequestDTO;
@@ -29,6 +33,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.onenth.OneNth.domain.alert.converter.AlertConverter.toAlert;
+import static com.onenth.OneNth.domain.alert.entity.AlertType.REVIEW;
+import static com.onenth.OneNth.domain.alert.fcm.FcmClient.sendNotification;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewCommandServiceImpl implements ReviewCommandService {
@@ -42,9 +50,11 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
     private final PurchaseItemRepository purchaseItemRepository;
     private final PurchaseReviewRepository purchaseReviewRepository;
     private final PurchaseReviewImageRepository purchaseReviewImageRepository;
+    private final AlertRepository alertRepository;
 
     private final AmazonS3Manager amazonS3Manager;
 
+    // 거래후기 생성
     @Transactional
     @Override
     public ReviewResponseDTO.successCreateSharingReviewDTO createSharingItemReview(
@@ -68,6 +78,16 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
 
         saveReviewImages(images, review, ReviewType.SHARING);
 
+        Member targetUser = item.getMember();
+        if(targetUser.getMemberAlertSetting().isReviewAlerts()){
+            String title = "새로운 거래 후기가 도착했어요 \uD83D\uDED2";
+            String body = reviewer.getName() + "님이 보낸 \"" + item.getTitle() + "\" 거래 후기가 도착했습니다.";
+            
+            targetUser.getFcmTokens().forEach(token -> 
+                sendNotification(token.getFcmToken(), title, body)
+            );
+            alertRepository.save(toAlert(targetUser, REVIEW, ItemType.SHARE, review.getId(), body, title));
+        }
         return new ReviewResponseDTO.successCreateSharingReviewDTO(review.getId());
     }
 

@@ -3,9 +3,12 @@ package com.onenth.OneNth.domain.product.service;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.onenth.OneNth.domain.alert.entity.FcmToken;
 import com.onenth.OneNth.domain.member.entity.Member;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRegionRepository;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
+import com.onenth.OneNth.domain.member.settings.alert.generalAlert.repository.MemberAlertSettingRepository;
+import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertUtil;
 import com.onenth.OneNth.domain.product.dto.PurchaseItemListDTO;
 import com.onenth.OneNth.domain.product.converter.PurchaseItemConverter;
 import com.onenth.OneNth.domain.product.dto.PurchaseItemRequestDTO;
@@ -34,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
@@ -55,6 +57,8 @@ public class PurchaseItemService {
     private final GeoCodingService geoCodingService;
     private final MemberRepository memberRepository;
     private final PurchaseItemScrapRepository scrapRepository;
+    private final MemberAlertSettingRepository memberAlertSettingRepository;
+    private final KeywordAlertUtil keywordAlertUtil;
 
     //s3 연동
     private final AmazonS3 amazonS3;
@@ -218,7 +222,11 @@ public class PurchaseItemService {
                         throw new RuntimeException("S3 파일 업로드 실패: " + e.getMessage());
                     }
                 });
+        keywordAlertUtil.getRegionKeywordAlertMemberTokens(
+                region, purchaseItem.getProductName(), purchaseItem.getId(), ItemType.PURCHASE, member);
 
+        keywordAlertUtil.getProductKeywordAlertMemberTokens(
+                purchaseItem.getProductName(), member, purchaseItem.getId(), ItemType.PURCHASE);
         return purchaseItem.getId();
     }
 

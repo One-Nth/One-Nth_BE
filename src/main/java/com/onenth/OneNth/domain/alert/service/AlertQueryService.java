@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AlertCommandService {
+@Transactional(readOnly = true)
+public class AlertQueryService {
 
     private final MemberRepository memberRepository;
     private final AlertRepository alertRepository;
 
-    // 꿀팁 N분의 1 알림 로그 조회
-    @Transactional
+    // N분의 1 알림 로그 조회
     public List<AlertResponseDTO.DealNotificationResponseDTO> getDealNotificationLogs(Long memberId) {
         List<AlertType> alertTypeList = Arrays.asList(AlertType.ITEM, AlertType.REVIEW);
         List<Alert> alertList = findRecentAlerts(memberId, alertTypeList);
@@ -48,8 +48,7 @@ public class AlertCommandService {
         return dtoList;
     }
 
-    // N분의 1 알림 로그 조회
-    @Transactional
+    // 꿀팁 N분의 1 알림 로그 조회
     public List<AlertResponseDTO.PostNotificationResponseDTO> getPostNotificationLogs(Long memberId) {
         List<AlertType> alertTypeList = Arrays.asList(AlertType.DISCOUNT, AlertType.RESTAURANT, AlertType.LIFE_TIP);
         List<Alert> alertList = findRecentAlerts(memberId, alertTypeList);

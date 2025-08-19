@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class FcmClient {
 
-    public void sendNotification(String token, String title, String body) {
+    public static void sendNotification(String token, String title, String body) {
 
         Message message = Message.builder()
                 .setToken(token)

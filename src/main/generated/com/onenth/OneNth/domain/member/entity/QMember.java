@@ -18,6 +18,8 @@ public class QMember extends EntityPathBase<Member> {
 
     private static final long serialVersionUID = -1798981170L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QMember member = new QMember("member1");
 
     public final com.onenth.OneNth.domain.common.QBaseEntity _super = new com.onenth.OneNth.domain.common.QBaseEntity(this);
@@ -31,6 +33,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
+    public final ListPath<com.onenth.OneNth.domain.alert.entity.FcmToken, com.onenth.OneNth.domain.alert.entity.QFcmToken> fcmTokens = this.<com.onenth.OneNth.domain.alert.entity.FcmToken, com.onenth.OneNth.domain.alert.entity.QFcmToken>createList("fcmTokens", com.onenth.OneNth.domain.alert.entity.FcmToken.class, com.onenth.OneNth.domain.alert.entity.QFcmToken.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> inactiveDate = createDateTime("inactiveDate", java.time.LocalDateTime.class);
@@ -38,6 +42,8 @@ public class QMember extends EntityPathBase<Member> {
     public final EnumPath<com.onenth.OneNth.domain.member.entity.enums.LoginType> loginType = createEnum("loginType", com.onenth.OneNth.domain.member.entity.enums.LoginType.class);
 
     public final BooleanPath marketingAgree = createBoolean("marketingAgree");
+
+    public final QMemberAlertSetting memberAlertSetting;
 
     public final ListPath<MemberRegion, QMemberRegion> memberRegions = this.<MemberRegion, QMemberRegion>createList("memberRegions", MemberRegion.class, QMemberRegion.class, PathInits.DIRECT2);
 
@@ -73,15 +79,24 @@ public class QMember extends EntityPathBase<Member> {
     public final BooleanPath verified = createBoolean("verified");
 
     public QMember(String variable) {
-        super(Member.class, forVariable(variable));
+        this(Member.class, forVariable(variable), INITS);
     }
 
     public QMember(Path<? extends Member> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QMember(PathMetadata metadata) {
-        super(Member.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QMember(PathMetadata metadata, PathInits inits) {
+        this(Member.class, metadata, inits);
+    }
+
+    public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.memberAlertSetting = inits.isInitialized("memberAlertSetting") ? new QMemberAlertSetting(forProperty("memberAlertSetting"), inits.get("memberAlertSetting")) : null;
     }
 
 }

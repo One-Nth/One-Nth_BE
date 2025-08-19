@@ -1,7 +1,7 @@
 package com.onenth.OneNth.domain.alert.controller;
 
 import com.onenth.OneNth.domain.alert.dto.AlertResponseDTO;
-import com.onenth.OneNth.domain.alert.service.AlertCommandService;
+import com.onenth.OneNth.domain.alert.service.AlertQueryService;
 import com.onenth.OneNth.global.apiPayload.ApiResponse;
 import com.onenth.OneNth.global.auth.annotation.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +17,7 @@ import java.util.List;
 @Tag(name = "알림 관련 API")
 public class AlertController {
 
-    private final AlertCommandService alertCommandService;
+    private final AlertQueryService alertQueryService;
 
     @Operation(
             summary = "N분의 1 알림 로그 조회 API",
@@ -32,7 +32,7 @@ public class AlertController {
             @AuthUser Long memberId
     ) {
         List<AlertResponseDTO.DealNotificationResponseDTO> logs
-                = alertCommandService.getDealNotificationLogs(memberId);
+                = alertQueryService.getDealNotificationLogs(memberId);
         return ApiResponse.onSuccess(logs);
     }
 
@@ -49,7 +49,7 @@ public class AlertController {
             @AuthUser Long memberId
     ) {
         List<AlertResponseDTO.PostNotificationResponseDTO> logs
-                = alertCommandService.getPostNotificationLogs(memberId);
+                = alertQueryService.getPostNotificationLogs(memberId);
         return ApiResponse.onSuccess(logs);
     }
 }

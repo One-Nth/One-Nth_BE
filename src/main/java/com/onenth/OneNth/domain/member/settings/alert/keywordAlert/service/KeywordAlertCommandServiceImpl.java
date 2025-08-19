@@ -9,7 +9,7 @@ import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository.Pr
 import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.repository.RegionKeywordAlertRepository;
 import com.onenth.OneNth.domain.member.entity.Member;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
-import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertSortUtil;
+import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertUtil;
 import com.onenth.OneNth.domain.region.entity.Region;
 import com.onenth.OneNth.domain.region.repository.RegionRepository;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
@@ -18,8 +18,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,7 +133,7 @@ public class KeywordAlertCommandServiceImpl implements KeywordAlertCommandServic
         List<ProductKeywordAlert> productKeywordAlertList = findProductAlertsByIds(productKeywordIds, member);
         List<RegionKeywordAlert> regionKeywordAlertList = findRegionAlertsByIds(regionKeywordIds, member);
 
-        List<Object> mergedAlerts = KeywordAlertSortUtil.mergeAndSortAlerts(productKeywordAlertList, regionKeywordAlertList);
+        List<Object> mergedAlerts = KeywordAlertUtil.mergeAndSortAlerts(productKeywordAlertList, regionKeywordAlertList);
 
         List<KeywordAlertResponseDTO.AlertSummary> alertSummaryList = mergedAlerts.stream()
                 .map(alert -> KeywordAlertConverter.toAlertSummary(alert))

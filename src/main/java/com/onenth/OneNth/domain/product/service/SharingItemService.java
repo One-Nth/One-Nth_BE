@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.onenth.OneNth.domain.member.entity.Member;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRegionRepository;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
+import com.onenth.OneNth.domain.member.settings.alert.keywordAlert.util.KeywordAlertUtil;
 import com.onenth.OneNth.domain.product.converter.SharingItemConverter;
 import com.onenth.OneNth.domain.product.dto.SharingItemListDTO;
 import com.onenth.OneNth.domain.product.dto.SharingItemRequestDTO;
@@ -56,6 +57,7 @@ public class SharingItemService {
     private final RegionRepository regionRepository;
     private final GeoCodingService geoCodingService;
     private final SharingItemScrapRepository scrapRepository;
+    private final KeywordAlertUtil keywordAlertUtil;
 
     private final AmazonS3 amazonS3;
 
@@ -215,6 +217,11 @@ public class SharingItemService {
                         throw new RuntimeException("S3 파일 업로드 실패: " + e.getMessage());
                     }
                 });
+        keywordAlertUtil.getRegionKeywordAlertMemberTokens(
+                region, sharingItem.getProductName(), sharingItem.getId(), ItemType.SHARE, member);
+
+        keywordAlertUtil.getProductKeywordAlertMemberTokens(
+                sharingItem.getProductName(), member, sharingItem.getId(), ItemType.SHARE);
 
         return sharingItem.getId();
     }
