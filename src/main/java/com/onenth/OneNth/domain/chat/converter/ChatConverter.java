@@ -14,12 +14,13 @@ public class ChatConverter {
     }
 
     public static ChatResponseDTO.ChatRoomPreviewDTO toChatRoomPreviewDTO (
-            ChatRoom chatRoom, Long targetMemberId) {
+            ChatRoom chatRoom, Long targetMemberId, Boolean blocked) {
         return ChatResponseDTO.ChatRoomPreviewDTO.builder()
                 .chatRoomId(chatRoom.getId())
                 .chatRoomType(chatRoom.getChatRoomType())
                 .chatRoomName(chatRoom.getName())
                 .opponentId(targetMemberId)
+                .blocked(blocked)
                 .build();
     }
 
