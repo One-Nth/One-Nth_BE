@@ -64,9 +64,9 @@ public class QDealCompletion extends EntityPathBase<DealCompletion> {
 
     public QDealCompletion(Class<? extends DealCompletion> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.buyer = inits.isInitialized("buyer") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("buyer")) : null;
+        this.buyer = inits.isInitialized("buyer") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("buyer"), inits.get("buyer")) : null;
         this.dealConfirmation = inits.isInitialized("dealConfirmation") ? new QDealConfirmation(forProperty("dealConfirmation"), inits.get("dealConfirmation")) : null;
-        this.seller = inits.isInitialized("seller") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("seller")) : null;
+        this.seller = inits.isInitialized("seller") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("seller"), inits.get("seller")) : null;
     }
 
 }

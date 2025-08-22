@@ -54,7 +54,7 @@ public class QFcmToken extends EntityPathBase<FcmToken> {
 
     public QFcmToken(Class<? extends FcmToken> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
     }
 
 }

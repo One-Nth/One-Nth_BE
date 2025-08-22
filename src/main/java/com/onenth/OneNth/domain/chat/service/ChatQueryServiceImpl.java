@@ -7,8 +7,10 @@ import com.onenth.OneNth.domain.chat.entity.ChatRoom;
 import com.onenth.OneNth.domain.chat.entity.ChatRoomMember;
 import com.onenth.OneNth.domain.chat.entity.enums.ChatRoomType;
 import com.onenth.OneNth.domain.chat.repository.ChatRoomRepository;
+import com.onenth.OneNth.domain.member.entity.Block;
 import com.onenth.OneNth.domain.member.entity.Member;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
+import com.onenth.OneNth.domain.member.settings.block.repository.BlockRepository;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
 import com.onenth.OneNth.global.apiPayload.exception.handler.ChatHandler;
 import com.onenth.OneNth.global.apiPayload.exception.handler.MemberHandler;
@@ -16,8 +18,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.onenth.OneNth.domain.chat.converter.ChatConverter.toChatRoomPreviewDTO;
@@ -30,7 +34,9 @@ public class ChatQueryServiceImpl implements ChatQueryService {
     private final MemberRepository memberRepository;
 
     private final ChatRoomRepository chatRoomRepository;
+    private final BlockRepository blockRepository;
 
+    // 참여 중인 채팅방 조회
     @Override
     public List<ChatResponseDTO.ChatRoomPreviewDTO> getMyChatRoomList(Long memberId, ChatRoomType chatRoomType) {
         Member member = memberRepository.findWithChatRoomsById(memberId)
@@ -52,7 +58,12 @@ public class ChatQueryServiceImpl implements ChatQueryService {
 
                     Long opponentId = opponent == null ? null : opponent.getId();
 
-                    ChatResponseDTO.ChatRoomPreviewDTO dto = toChatRoomPreviewDTO(chatRoom,opponentId);
+                    Optional<Block> isBlocked
+                            = blockRepository.findByMemberAndBlockedMember(member, opponent);
+
+                    boolean blocked = isBlocked.isPresent();
+
+                    ChatResponseDTO.ChatRoomPreviewDTO dto = toChatRoomPreviewDTO(chatRoom, opponentId, blocked);
 
                     if (lastMessage != null) {
                         dto.setLastMessageContent(lastMessage.getContent());

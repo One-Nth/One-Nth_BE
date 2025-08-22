@@ -28,6 +28,7 @@ public class ChatResponseDTO {
         private Long opponentId;
         private String lastMessageContent;
         private LocalDateTime lastMessageTime;
+        private Boolean blocked;
     }
 
     @Builder

@@ -1,5 +1,6 @@
 package com.onenth.OneNth.domain.chat.service;
 
+import com.onenth.OneNth.domain.alert.entity.AlertType;
 import com.onenth.OneNth.domain.chat.converter.ChatConverter;
 import com.onenth.OneNth.domain.chat.dto.ChatResponseDTO;
 import com.onenth.OneNth.domain.chat.entity.ChatMessage;
@@ -15,6 +16,7 @@ import com.onenth.OneNth.domain.member.entity.Report;
 import com.onenth.OneNth.domain.member.entity.enums.ReportType;
 import com.onenth.OneNth.domain.member.repository.ReportRepository;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
+import com.onenth.OneNth.domain.member.settings.block.repository.BlockRepository;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
 import com.onenth.OneNth.global.apiPayload.exception.handler.ChatHandler;
 import com.onenth.OneNth.global.apiPayload.exception.handler.MemberHandler;
@@ -24,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
+
+import static com.onenth.OneNth.domain.alert.converter.AlertConverter.toAlert;
+import static com.onenth.OneNth.domain.alert.fcm.FcmClient.sendNotification;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +41,7 @@ public class ChatCommandServiceImpl implements ChatCommandService {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ReportRepository reportRepository;
+    private final BlockRepository blockRepository;
 
     public ChatResponseDTO.ChatRoomResponseDTO getChatRoomName(Long memberId, Long targetMemberId, ChatRoomType chatRoomType) {
         if (memberId == targetMemberId) {
@@ -93,15 +99,39 @@ public class ChatCommandServiceImpl implements ChatCommandService {
         ChatRoom chatRoom = chatRoomRepository.findByName(roomName)
                 .orElseThrow(() -> new ChatHandler(ErrorStatus.CHAT_ROOM_NOT_FOUND));
 
-        ChatMessage chatMessage = ChatMessage.builder()
+                ChatMessage chatMessage = ChatMessage.builder()
                 .chatRoom(chatRoom)
                 .member(member)
                 .content(chatMessageDTO.getContent())
                 .build();
         chatMessageRepository.save(chatMessage);
 
+        Member targetMember = chatRoom.getMember1().getId().equals(member.getId()) 
+                ? chatRoom.getMember2() 
+                : chatRoom.getMember1();
+
+        boolean isBlockedByTarget = blockRepository.findByMemberAndBlockedMember(targetMember, member).isPresent();
+        boolean isBlockedByMe = blockRepository.findByMemberAndBlockedMember(member, targetMember).isPresent();
+        
+        if (isBlockedByTarget) {
+            throw new ChatHandler(ErrorStatus.CHAT_MESSAGE_BLOCKED_USER_RECEIVED);
+        }
+        
+        if (isBlockedByMe) {
+            throw new ChatHandler(ErrorStatus.CHAT_MESSAGE_BLOCKED_USER_SENT);
+        }
+
         messagingTemplate.convertAndSend(
                 "/sub/chat-rooms/" + chatRoom.getName(), chatMessageDTO);
+
+        if (targetMember.getMemberAlertSetting().isChatAlerts()) {
+            String title = "새로운 메시지가 도착했어요 💬";
+            String body = member.getName() + " : " + chatMessageDTO.getContent();
+
+            targetMember.getFcmTokens().forEach(token ->
+                    sendNotification(token.getFcmToken(), title, body)
+            );
+        }
     }
 
     @Override
