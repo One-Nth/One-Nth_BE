@@ -16,6 +16,7 @@ import com.onenth.OneNth.domain.member.entity.Report;
 import com.onenth.OneNth.domain.member.entity.enums.ReportType;
 import com.onenth.OneNth.domain.member.repository.ReportRepository;
 import com.onenth.OneNth.domain.member.repository.memberRepository.MemberRepository;
+import com.onenth.OneNth.domain.member.settings.block.repository.BlockRepository;
 import com.onenth.OneNth.global.apiPayload.code.status.ErrorStatus;
 import com.onenth.OneNth.global.apiPayload.exception.handler.ChatHandler;
 import com.onenth.OneNth.global.apiPayload.exception.handler.MemberHandler;
@@ -40,6 +41,7 @@ public class ChatCommandServiceImpl implements ChatCommandService {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ReportRepository reportRepository;
+    private final BlockRepository blockRepository;
 
     public ChatResponseDTO.ChatRoomResponseDTO getChatRoomName(Long memberId, Long targetMemberId, ChatRoomType chatRoomType) {
         if (memberId == targetMemberId) {
@@ -104,12 +106,23 @@ public class ChatCommandServiceImpl implements ChatCommandService {
                 .build();
         chatMessageRepository.save(chatMessage);
 
-        messagingTemplate.convertAndSend(
-                "/sub/chat-rooms/" + chatRoom.getName(), chatMessageDTO);
-
         Member targetMember = chatRoom.getMember1().getId().equals(member.getId()) 
                 ? chatRoom.getMember2() 
                 : chatRoom.getMember1();
+
+        boolean isBlockedByTarget = blockRepository.findByMemberAndBlockedMember(targetMember, member).isPresent();
+        boolean isBlockedByMe = blockRepository.findByMemberAndBlockedMember(member, targetMember).isPresent();
+        
+        if (isBlockedByTarget) {
+            throw new ChatHandler(ErrorStatus.CHAT_MESSAGE_BLOCKED_USER_RECEIVED);
+        }
+        
+        if (isBlockedByMe) {
+            throw new ChatHandler(ErrorStatus.CHAT_MESSAGE_BLOCKED_USER_SENT);
+        }
+
+        messagingTemplate.convertAndSend(
+                "/sub/chat-rooms/" + chatRoom.getName(), chatMessageDTO);
 
         if (targetMember.getMemberAlertSetting().isChatAlerts()) {
             String title = "새로운 메시지가 도착했어요 💬";

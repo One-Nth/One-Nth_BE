@@ -70,6 +70,8 @@ public enum ErrorStatus implements BaseErrorCode {
     BLOCK_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "BLOCK001", "차단 대상 사용자가 존재하지 않습니다."),
     BLOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "BLOCK002", "차단한 사용자 목록에 존재하지 않습니다."),
     MEMBER_CANNOT_BLOCK_SELF(HttpStatus.BAD_REQUEST, "BLOCK003", "자기 자신을 차단할 수 없습니다."),
+    CHAT_MESSAGE_BLOCKED_USER_RECEIVED(HttpStatus.FORBIDDEN, "BLOCK004", "차단당한 사용자에게는 메시지를 보낼 수 없습니다."),
+    CHAT_MESSAGE_BLOCKED_USER_SENT(HttpStatus.FORBIDDEN, "BLOCK005", "차단한 사용자에게는 메시지를 보낼 수 없습니다."),
 
     // 거래 관련
     DEAL_CONFIRMATION_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "DEAL_CONFIRMATION001", "해당 상품은 이미 거래확정 폼이 발행된 상태입니다."),
