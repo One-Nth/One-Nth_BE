@@ -54,8 +54,8 @@ public class QBlock extends EntityPathBase<Block> {
 
     public QBlock(Class<? extends Block> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.blockedMember = inits.isInitialized("blockedMember") ? new QMember(forProperty("blockedMember")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.blockedMember = inits.isInitialized("blockedMember") ? new QMember(forProperty("blockedMember"), inits.get("blockedMember")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
     }
 
 }

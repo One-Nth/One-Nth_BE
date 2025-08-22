@@ -1,5 +1,6 @@
 package com.onenth.OneNth.domain.chat.service;
 
+import com.onenth.OneNth.domain.alert.entity.AlertType;
 import com.onenth.OneNth.domain.chat.converter.ChatConverter;
 import com.onenth.OneNth.domain.chat.dto.ChatResponseDTO;
 import com.onenth.OneNth.domain.chat.entity.ChatMessage;
@@ -24,6 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
+
+import static com.onenth.OneNth.domain.alert.converter.AlertConverter.toAlert;
+import static com.onenth.OneNth.domain.alert.fcm.FcmClient.sendNotification;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +97,7 @@ public class ChatCommandServiceImpl implements ChatCommandService {
         ChatRoom chatRoom = chatRoomRepository.findByName(roomName)
                 .orElseThrow(() -> new ChatHandler(ErrorStatus.CHAT_ROOM_NOT_FOUND));
 
-        ChatMessage chatMessage = ChatMessage.builder()
+                ChatMessage chatMessage = ChatMessage.builder()
                 .chatRoom(chatRoom)
                 .member(member)
                 .content(chatMessageDTO.getContent())
@@ -102,6 +106,19 @@ public class ChatCommandServiceImpl implements ChatCommandService {
 
         messagingTemplate.convertAndSend(
                 "/sub/chat-rooms/" + chatRoom.getName(), chatMessageDTO);
+
+        Member targetMember = chatRoom.getMember1().getId().equals(member.getId()) 
+                ? chatRoom.getMember2() 
+                : chatRoom.getMember1();
+
+        if (targetMember.getMemberAlertSetting().isChatAlerts()) {
+            String title = "새로운 메시지가 도착했어요 💬";
+            String body = member.getName() + " : " + chatMessageDTO.getContent();
+
+            targetMember.getFcmTokens().forEach(token ->
+                    sendNotification(token.getFcmToken(), title, body)
+            );
+        }
     }
 
     @Override

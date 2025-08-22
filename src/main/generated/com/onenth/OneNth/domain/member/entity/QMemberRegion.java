@@ -58,7 +58,7 @@ public class QMemberRegion extends EntityPathBase<MemberRegion> {
 
     public QMemberRegion(Class<? extends MemberRegion> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
         this.region = inits.isInitialized("region") ? new com.onenth.OneNth.domain.region.entity.QRegion(forProperty("region")) : null;
     }
 

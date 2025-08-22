@@ -54,7 +54,7 @@ public class QSharingItemScrap extends EntityPathBase<SharingItemScrap> {
 
     public QSharingItemScrap(Class<? extends SharingItemScrap> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.onenth.OneNth.domain.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
         this.sharingItem = inits.isInitialized("sharingItem") ? new com.onenth.OneNth.domain.product.entity.QSharingItem(forProperty("sharingItem"), inits.get("sharingItem")) : null;
     }
 
